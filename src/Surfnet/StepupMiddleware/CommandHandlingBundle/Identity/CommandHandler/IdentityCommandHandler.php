@@ -40,7 +40,6 @@ use Surfnet\Stepup\Identity\Value\PhoneNumber;
 use Surfnet\Stepup\Identity\Value\SecondFactorId;
 use Surfnet\Stepup\Identity\Value\SecondFactorIdentifierFactory;
 use Surfnet\Stepup\Identity\Value\StepupProvider;
-use Surfnet\Stepup\Identity\Value\U2fKeyHandle;
 use Surfnet\Stepup\Identity\Value\YubikeyPublicId;
 use Surfnet\StepupBundle\Service\SecondFactorTypeService;
 use Surfnet\StepupBundle\Value\SecondFactorType;
@@ -54,7 +53,6 @@ use Surfnet\StepupMiddleware\CommandHandlingBundle\Identity\Command\CreateIdenti
 use Surfnet\StepupMiddleware\CommandHandlingBundle\Identity\Command\ExpressLocalePreferenceCommand;
 use Surfnet\StepupMiddleware\CommandHandlingBundle\Identity\Command\ProveGssfPossessionCommand;
 use Surfnet\StepupMiddleware\CommandHandlingBundle\Identity\Command\ProvePhonePossessionCommand;
-use Surfnet\StepupMiddleware\CommandHandlingBundle\Identity\Command\ProveU2fDevicePossessionCommand;
 use Surfnet\StepupMiddleware\CommandHandlingBundle\Identity\Command\ProveYubikeyPossessionCommand;
 use Surfnet\StepupMiddleware\CommandHandlingBundle\Identity\Command\RevokeOwnSecondFactorCommand;
 use Surfnet\StepupMiddleware\CommandHandlingBundle\Identity\Command\RevokeRegistrantsSecondFactorCommand;
@@ -276,30 +274,6 @@ class IdentityCommandHandler extends CommandHandler
             new SecondFactorId($command->secondFactorId),
             new StepupProvider($secondFactorType),
             new GssfId($command->gssfId),
-            $this->emailVerificationIsRequired($identity),
-            $this->configurableSettings->createNewEmailVerificationWindow()
-        );
-
-        $this->eventSourcedRepository->save($identity);
-    }
-
-    public function handleProveU2fDevicePossessionCommand(ProveU2fDevicePossessionCommand $command)
-    {
-        /** @var IdentityApi $identity */
-        $identity = $this->eventSourcedRepository->load(new IdentityId($command->identityId));
-
-        $this->assertSecondFactorIsAllowedFor(new SecondFactorType('u2f'), $identity->getInstitution());
-
-        $configurationInstitution = new ConfigurationInstitution(
-            (string) $identity->getInstitution()
-        );
-
-        $tokenCount = $this->institutionConfigurationOptionsService->getMaxNumberOfTokensFor($configurationInstitution);
-        $identity->setMaxNumberOfTokens($tokenCount);
-
-        $identity->provePossessionOfU2fDevice(
-            new SecondFactorId($command->secondFactorId),
-            new U2fKeyHandle($command->keyHandle),
             $this->emailVerificationIsRequired($identity),
             $this->configurableSettings->createNewEmailVerificationWindow()
         );

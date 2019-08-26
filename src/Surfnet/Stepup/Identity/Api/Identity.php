@@ -21,7 +21,6 @@ namespace Surfnet\Stepup\Identity\Api;
 use Broadway\Domain\AggregateRoot;
 use Surfnet\Stepup\Configuration\InstitutionConfiguration;
 use Surfnet\Stepup\Exception\DomainException;
-use Surfnet\Stepup\Identity\Collection\InstitutionCollection;
 use Surfnet\Stepup\Identity\Entity\VerifiedSecondFactor;
 use Surfnet\Stepup\Identity\Value\CommonName;
 use Surfnet\Stepup\Identity\Value\ContactInformation;
@@ -39,7 +38,6 @@ use Surfnet\Stepup\Identity\Value\RegistrationAuthorityRole;
 use Surfnet\Stepup\Identity\Value\SecondFactorId;
 use Surfnet\Stepup\Identity\Value\SecondFactorIdentifier;
 use Surfnet\Stepup\Identity\Value\StepupProvider;
-use Surfnet\Stepup\Identity\Value\U2fKeyHandle;
 use Surfnet\Stepup\Identity\Value\YubikeyPublicId;
 use Surfnet\StepupBundle\Service\SecondFactorTypeService;
 use Surfnet\StepupBundle\Value\SecondFactorType;
@@ -131,20 +129,6 @@ interface Identity extends AggregateRoot
         SecondFactorId $secondFactorId,
         StepupProvider $provider,
         GssfId $gssfId,
-        $emailVerificationRequired,
-        EmailVerificationWindow $emailVerificationWindow
-    );
-
-    /**
-     * @param SecondFactorId          $secondFactorId
-     * @param U2fKeyHandle            $keyHandle
-     * @param bool                    $emailVerificationRequired
-     * @param EmailVerificationWindow $emailVerificationWindow
-     * @return void
-     */
-    public function provePossessionOfU2fDevice(
-        SecondFactorId $secondFactorId,
-        U2fKeyHandle $keyHandle,
         $emailVerificationRequired,
         EmailVerificationWindow $emailVerificationWindow
     );
