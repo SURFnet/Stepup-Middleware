@@ -37,9 +37,6 @@ final class SecondFactorIdentifierFactory
             return new YubikeyPublicId($secondFactorIdentifier);
         }
 
-        if ($type->isU2f()) {
-            return new U2fKeyHandle($secondFactorIdentifier);
-        }
         // Assume the SecondFactorType is gssf if it isn't one of the specified types.
         return new GssfId($secondFactorIdentifier);
     }
@@ -58,9 +55,6 @@ final class SecondFactorIdentifierFactory
             return YubikeyPublicId::unknown();
         }
 
-        if ($type->isU2f()) {
-            return U2fKeyHandle::unknown();
-        }
         // Assume the SecondFactorType is gssf if it isn't one of the specified types.
         return GssfId::unknown();
     }
